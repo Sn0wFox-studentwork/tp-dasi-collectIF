@@ -10,6 +10,8 @@ import java.util.List;
 
 public class MailEvenement extends Mail {
     
+	private Evenement event;
+	
     public MailEvenement() {
     }
 
@@ -27,6 +29,8 @@ public class MailEvenement extends Mail {
                     "Lieu : " + event.getLieu() + "\r\n" +
                     "TODO : calcul distance" + "\r\n",
             dest);
+        
+        this.event = event;
             
         if (event.getActivite().isParEquipe()) {
             for (Equipe equipe : event.getEquipes()) {
@@ -46,5 +50,10 @@ public class MailEvenement extends Mail {
                 }
             }
         }
+    }
+    
+    public void setEvenement(Evenement event)
+    {
+    	this.event = event;
     }
 }

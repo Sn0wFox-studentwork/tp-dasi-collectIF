@@ -5,8 +5,11 @@ import fr.insalyon.dasi.dao.EvenementDao;
 import fr.insalyon.dasi.dao.JpaUtil;
 import fr.insalyon.dasi.dao.LieuDao;
 import fr.insalyon.dasi.metier.modele.Adherent;
+import fr.insalyon.dasi.metier.modele.Equipe;
 import fr.insalyon.dasi.metier.modele.Evenement;
 import fr.insalyon.dasi.metier.modele.Lieu;
+import fr.insalyon.dasi.metier.modele.MailEvenement;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -113,9 +116,29 @@ public class ServiceMetier {
         try {
             if(event.getEtat() == Evenement.EventState.FILLED) {
                 event.setEtat(Evenement.EventState.COMPLETE);
+                eventDao.update(event);
+                JpaUtil.validerTransaction();
+                Adherent exp = new Adherent();
+                exp.setMail("collectif@collectif.org");
+                MailEvenement mail = new MailEvenement();
+                mail.setExpediteur(exp);
+                mail.setEvenement(event);
+                List<Equipe> equipes = event.getEquipes();
+                ArrayList<Adherent> dest = new ArrayList();
+                for(Equipe eq: equipes)
+                {
+                	dest.addAll(eq.getListeAdherents());
+                }
+                
+                ServiceTechnique.sendMail(dest, mail);
             }
-            eventDao.update(event);
-            JpaUtil.validerTransaction();
+            else
+            {
+            	JpaUtil.annulerTransaction();
+            	Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE,
+            			"The event " + event + " was not in a stable state.");
+            }
+            
         } catch (Throwable ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
