@@ -63,6 +63,11 @@ public class Adherent implements Serializable {
     public Double getLatitude() {
         return latitude;
     }
+    
+    public boolean isAdmin()
+    {
+    	return admin;
+    }
 
     public void setNom(String nom) {
         this.nom = nom;
@@ -87,6 +92,10 @@ public class Adherent implements Serializable {
     public void setCoordonnees(LatLng latLng) {
         this.longitude = latLng.lng;
         this.latitude = latLng.lat;
+    }
+    
+    public void setAdmin(boolean admin) {
+    	this.admin = admin;
     }
 
     @Override
