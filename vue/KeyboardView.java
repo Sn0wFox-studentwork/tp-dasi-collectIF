@@ -21,7 +21,7 @@ public class KeyboardView {
 	private static final int CHOISIR = 5;
 	private static final int HISTORIQUE = 6;
 	private static final int DEMANDER_EVENEMENT = 7;
-	private static final int GERER_EVENEMENT = 8;
+	private static final int GERER_EVENEMENTS = 8;
 	
 	private static Adherent adherentConnecte = null;
 	
@@ -59,7 +59,7 @@ public class KeyboardView {
 				case DEMANDER_EVENEMENT:
 					action = demanderEvenement();
 					break;
-				case GERER_EVENEMENT:
+				case GERER_EVENEMENTS:
 					action = gererEvenements();
 					break;
 				default:
@@ -190,7 +190,41 @@ public class KeyboardView {
 	
 	private static int choisirQuoiFaire()
 	{
-		return ACCUEIL;
+		System.out.println("*************PAGE DE CHOIX D'ACTION*************");
+		System.out.println("D'ici, vous pouvez :\n");
+		System.out.println("[0] Vous déconnecter");
+		System.out.println("[1] Voir votre historique de demandes");
+		System.out.println("[2] Faire une demande d'événement");
+		if(adherentConnecte.isAdmin())
+		{
+			System.out.println("[3] Gérer les événements\n");
+		}
+		else
+		{
+			System.out.println("");
+		}
+		
+		int action = Saisie.lireInteger("Que voulez-vous faire ?");
+		
+		switch(action)
+		{
+			case 0:
+				return DECONNECTER;
+			case 1:
+				return HISTORIQUE;
+			case 2:
+				return DEMANDER_EVENEMENT;
+			case 3:
+				if(adherentConnecte.isAdmin())
+				{
+					return GERER_EVENEMENTS;
+				}
+				mauvaiseAction();
+				return CHOISIR;
+			default:
+				mauvaiseAction();
+				return CHOISIR;
+		}
 	}
 	
 	private static int voirHistorique()
