@@ -123,7 +123,7 @@ public class ServiceMetier {
         }
     }
     
-    // Liés à l'OM : Lieu   
+    // Liés à l'OM : Lieu
     public static List<Lieu> getLieuxDispo(Date date, Lieu.TypeLieu type) {
         JpaUtil.creerEntityManager();
         

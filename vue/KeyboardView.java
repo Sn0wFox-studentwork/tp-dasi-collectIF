@@ -1,7 +1,9 @@
 package fr.insalyon.dasi.vue;
 
+import fr.insalyon.dasi.dao.AdherentDao;
 import fr.insalyon.dasi.dao.JpaUtil;
 import fr.insalyon.dasi.metier.modele.Adherent;
+import fr.insalyon.dasi.metier.services.ServiceMetier;
 import fr.insalyon.dasi.util.Saisie;
 
 public class KeyboardView {
@@ -73,7 +75,7 @@ public class KeyboardView {
 		System.out.println("D'ici, vous pouvez :\n");
 		System.out.println("[0] Quitter");
 		System.out.println("[1] Tenter de vous connecter");
-		System.out.println("[2] Créer un compte\n");		
+		System.out.println("[2] Créer un compte\n");
 		int action = Saisie.lireInteger("Que voulez-vous faire ?");
 		
 		switch(action)
@@ -83,7 +85,7 @@ public class KeyboardView {
 			case 1:
 				return CONNECTER;
 			case 2:
-				return DECONNECTER;
+				return CREER_COMPTE;
 			default:
 				mauvaiseAction();
 				return ACCUEIL;
@@ -92,7 +94,36 @@ public class KeyboardView {
 	
 	private static int connecter()
 	{
-		return ACCUEIL;
+		System.out.println("*************PAGE DE CONNEXION*************");
+		System.out.println("D'ici, vous pouvez :\n");
+		System.out.println("[1] Revenir à l'écran d'accueil");
+		System.out.println("[email mdp] Connecter\n");
+		String chaine = Saisie.lireChaine("Que voulez-vous faire ?");
+		
+		switch(chaine)
+		{
+			case "1":
+				return ACCUEIL;
+			default:
+				String[] infos = chaine.split(" ");
+				if(infos.length != 2)
+				{
+					mauvaiseAction();
+					return CONNECTER;
+				}
+				Adherent adh = new Adherent();
+				adh.setMail(infos[0]);
+				adh.setMdp(infos[1]);
+				adherentConnecte = ServiceMetier.authentificate(adh);
+				if(adherentConnecte != null)
+				{
+					System.out.println(	"Vous êtes connecté en tant que " +
+										adherentConnecte.getPrenom() + ".\n");
+					return CHOISIR;
+				}
+				System.out.println("Impossible de vous identifier.\n");
+				return CONNECTER;
+		}
 	}
 	
 	private static int deconnecter()
