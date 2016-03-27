@@ -161,14 +161,24 @@ public class ServiceMetier {
     	return null;
     }
     
-    public static boolean ajouterAdherent(Adherent adh)
+	public static boolean ajouterAdherent(Adherent adh)
     {
         boolean res = true;
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
         
         AdherentDao adhDao = new AdherentDao();
+        
         try {
+        	List<Adherent> la = adhDao.findByMail(adh.getMail());
+        	if(la != null)
+        	{
+        		if(!la.isEmpty())
+        		{
+        			JpaUtil.annulerTransaction();
+        			return false;
+        		}
+        	}
             adhDao.create(adh);
             JpaUtil.validerTransaction();
         } catch (Throwable ex) {
@@ -176,8 +186,8 @@ public class ServiceMetier {
             res = false;
         } finally {
             JpaUtil.fermerEntityManager();
-            return res;
         }
+        return res;
     }
     
     public static void supprimerAdherent(Adherent adh)
