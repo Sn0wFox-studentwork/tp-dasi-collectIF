@@ -2,9 +2,12 @@ package fr.insalyon.dasi.vue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import fr.insalyon.dasi.dao.AdherentDao;
+import fr.insalyon.dasi.dao.ActiviteDao;
 import fr.insalyon.dasi.dao.JpaUtil;
+import fr.insalyon.dasi.metier.modele.Activite;
 import fr.insalyon.dasi.metier.modele.Adherent;
 import fr.insalyon.dasi.metier.modele.Evenement;
 import fr.insalyon.dasi.metier.modele.MailInscription;
@@ -143,13 +146,13 @@ public class KeyboardView {
 	{
 		System.out.println("*************PAGE D'INSCRIPTION*************");
 		System.out.println("D'ici, vous pouvez :\n");
-		System.out.println("[1] Revenir à l'écran d'accueil");
+		System.out.println("[0] Revenir à l'écran d'accueil");
 		System.out.println("[email mdp prenom nom] Creer un compte\n");
 		String chaine = Saisie.lireChaine("Que voulez-vous faire ?");
 		
 		switch(chaine)
 		{
-			case "1":
+			case "0":
 				return ACCUEIL;
 			default:
 				String[] infos = chaine.split(" ");
@@ -239,7 +242,7 @@ public class KeyboardView {
 		{
 			System.out.println(ev);
 		}
-		System.out.println("Ci dessus se trouve l'historique de vos demandes.");
+		System.out.println("\nCi-dessus se trouve l'historique de vos demandes.");
 		System.out.println("Quand vous aurez fini de le consulter, vous pourrez :\n");
 		System.out.println("[0] Revenir à la page de choix");
 		System.out.println("[1] Rafraichir l'Historique\n");
@@ -259,7 +262,56 @@ public class KeyboardView {
 	
 	private static int demanderEvenement()
 	{
-		return ACCUEIL;
+		System.out.println("*************PAGE DE DEMANDE D'EVENEMENT*************");
+		ActiviteDao actDao = new ActiviteDao();
+		try {
+			List<Activite> la = actDao.findAll();
+			for(Activite a: la)
+			{
+				System.out.println("ID: " + a.getId() + " - " + a.getDenomination());
+			}
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}
+		System.out.println("\nCi-dessus se trouvent toutes les activitées disponibles.");
+		System.out.println("Quand vous aurez fini de le consulter, vous pourrez :\n");
+		System.out.println("[0] Revenir à la page de choix");
+		System.out.println("[idActivité] Créer un événement associé à l'activité dont vous avez tapé l'ID\n");
+		int action = Saisie.lireInteger("Que voulez-vous faire ?");
+		
+		switch(action)
+		{
+			case 0:
+				return CHOISIR;
+			default:
+				Activite act;
+				try {
+					act = actDao.findById(action);
+					if(act == null)
+					{
+						mauvaiseAction();
+						return DEMANDER_EVENEMENT;
+					}
+					String confirmation = "";
+					System.out.println("Vous allez créer une demande d'événement et revenir à l'écran de choix.");
+					do
+					{
+						confirmation = Saisie.lireChaine("Voulez-vous continuer ?(y/n)");
+						if(confirmation.toLowerCase().equals("n"))
+						{
+							System.out.println("Annulation...");
+							return CHOISIR;
+						}
+					} while(!confirmation.toLowerCase().equals("y"));
+					
+					Evenement event = new Evenement();
+					event.setActivite(act);
+					ServiceMetier.createOrFillEvent(event, adherentConnecte);
+				} catch (Throwable ex) {
+					Logger.getLogger(KeyboardView.class.getName()).log(Level.SEVERE, null, ex);
+				}
+				return CHOISIR;
+		}
 	}
 	
 	private static int gererEvenements()

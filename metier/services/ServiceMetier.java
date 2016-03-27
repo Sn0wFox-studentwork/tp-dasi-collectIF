@@ -127,7 +127,7 @@ public class ServiceMetier {
                 mail.setExpediteur(exp);
                 mail.setEvenement(event);
                 List<Equipe> equipes = event.getEquipes();
-                ArrayList<Adherent> dest = new ArrayList();
+                ArrayList<Adherent> dest = new ArrayList<Adherent>();
                 for(Equipe eq: equipes)
                 {
                 	dest.addAll(eq.getListeAdherents());
