@@ -1,9 +1,13 @@
 package fr.insalyon.dasi.vue;
 
+import java.util.ArrayList;
+
 import fr.insalyon.dasi.dao.AdherentDao;
 import fr.insalyon.dasi.dao.JpaUtil;
 import fr.insalyon.dasi.metier.modele.Adherent;
+import fr.insalyon.dasi.metier.modele.MailInscription;
 import fr.insalyon.dasi.metier.services.ServiceMetier;
+import fr.insalyon.dasi.metier.services.ServiceTechnique;
 import fr.insalyon.dasi.util.Saisie;
 
 public class KeyboardView {
@@ -133,7 +137,55 @@ public class KeyboardView {
 	
 	private static int creerCompte()
 	{
-		return ACCUEIL;
+		System.out.println("*************PAGE D'INSCRIPTION*************");
+		System.out.println("D'ici, vous pouvez :\n");
+		System.out.println("[1] Revenir à l'écran d'accueil");
+		System.out.println("[email mdp prenom nom] Creer un compte\n");
+		String chaine = Saisie.lireChaine("Que voulez-vous faire ?");
+		
+		switch(chaine)
+		{
+			case "1":
+				return ACCUEIL;
+			default:
+				String[] infos = chaine.split(" ");
+				if(infos.length != 4)
+				{
+					mauvaiseAction();
+					return CREER_COMPTE;
+				}
+				
+				// Préparation de l'adhérent
+				Adherent adh = new Adherent();
+				adh.setMail(infos[0]);
+				adh.setMdp(infos[1]);
+				adh.setPrenom(infos[2]);
+				adh.setNom(infos[3]);
+				
+				// Préparation du mail de confirmation/rejet
+				MailInscription mail;
+				ArrayList<Adherent> destinataire = new ArrayList<Adherent>();
+				destinataire.add(adh);
+				Adherent exp = new Adherent();
+				exp.setMail("collectif@collectif.org");
+				
+				// Tentative d'inscription
+				boolean inscriptionReussie = ServiceMetier.ajouterAdherent(adh);
+				if(inscriptionReussie)
+				{
+					mail = new MailInscription(exp, adh, true);
+					System.out.println("Votre compte a été créé.");					
+				}
+				else
+				{
+					mail = new MailInscription(exp, adh, false);
+					System.out.println("La création de compte a échoué.");
+				}
+				System.out.println("Nous vous avons envoyé l'email suivant :");
+				ServiceTechnique.sendMail(destinataire, mail);
+				
+				return inscriptionReussie ? CONNECTER : ACCUEIL;
+		}
 	}
 	
 	private static int choisirQuoiFaire()
