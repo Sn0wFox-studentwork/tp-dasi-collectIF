@@ -150,13 +150,13 @@ public class ServiceMetier {
     }
     
     // Liés à l'OM : Lieu
-    public static List<Lieu> getLieuxDispo(Date date, Lieu.TypeLieu type) {
+    public static List<Lieu> getLieuxDispo(Date date) {
         JpaUtil.creerEntityManager();
         
         List<Lieu> ll = new ArrayList<Lieu>();
         LieuDao lieuDao = new LieuDao();
         try {
-             ll = lieuDao.findLieuxDispoByType(date, type);
+             ll = lieuDao.findLieuxDispoByDate(date);
         } catch (Throwable ex) {
             Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
         } finally {

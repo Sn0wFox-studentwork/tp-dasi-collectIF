@@ -82,4 +82,18 @@ public class LieuDao {
         
         return lieux;
     }
+    
+    public List<Lieu> findLieuxDispoByDate(Date date) {
+        EntityManager em = JpaUtil.obtenirEntityManager();
+        List<Lieu> lieux;
+        try {
+            Query q = em.createQuery("SELECT e.lieu FROM Evenement e WHERE e.date != :dte");
+            lieux = (List<Lieu>) q.setParameter("dte", date).getResultList();
+        }
+        catch(Exception e) {
+            throw e;
+        }
+        
+        return lieux;
+    }
 }

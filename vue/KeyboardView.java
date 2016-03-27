@@ -6,10 +6,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import fr.insalyon.dasi.dao.ActiviteDao;
+import fr.insalyon.dasi.dao.EvenementDao;
 import fr.insalyon.dasi.dao.JpaUtil;
+import fr.insalyon.dasi.dao.LieuDao;
 import fr.insalyon.dasi.metier.modele.Activite;
 import fr.insalyon.dasi.metier.modele.Adherent;
 import fr.insalyon.dasi.metier.modele.Evenement;
+import fr.insalyon.dasi.metier.modele.Lieu;
 import fr.insalyon.dasi.metier.modele.MailInscription;
 import fr.insalyon.dasi.metier.services.ServiceMetier;
 import fr.insalyon.dasi.metier.services.ServiceTechnique;
@@ -316,7 +319,64 @@ public class KeyboardView {
 	
 	private static int gererEvenements()
 	{
-		return ACCUEIL;
+		System.out.println("*************PAGE DE GESTION DES EVENEMENTS*************");
+		List<Evenement> le = ServiceMetier.getEventsToComplete();
+		for(Evenement ev: le)
+		{
+			System.out.println("EV-ID: " + ev.getId() + " - " + ev.getActivite().getDenomination());
+		}
+		System.out.println("\nCi-dessus se trouve l'ensemble des événements à compléter avec un lieu.");
+		System.out.println("Quand vous aurez fini de le consulter, vous pourrez :\n");
+		System.out.println("[0] Revenir à la page de choix");
+		System.out.println("[idEvenement] Afficher l'ensemble des lieux disponibles pour cet événement\n");
+		int action = Saisie.lireInteger("Que voulez-vous faire ?");
+		
+		switch(action)
+		{
+			case 0:
+				return CHOISIR;
+			default:
+				EvenementDao eventDao = new EvenementDao();
+				Evenement ev;
+				try {
+					ev = eventDao.findById(action);
+					if(ev == null)
+					{
+						mauvaiseAction();
+						return GERER_EVENEMENTS;
+					}
+					List<Lieu> ll = ServiceMetier.getLieuxDispo(ev.getDate());
+					for(Lieu lieu: ll)
+					{
+						System.out.println("L-ID: " + lieu.getId() + " - " + lieu.getTypeLieu() + " " + lieu.getDenomination());
+					}
+					System.out.println("\nCi-dessus se trouve l'ensemble des lieux disponibles pour l'événement " +
+										ev.getId() + ".");
+					System.out.println("Quand vous aurez fini de le consulter, vous pourrez :\n");
+					System.out.println("[0] Revenir à la page d'affichage des événements");
+					System.out.println("[idEvenement] Affecter le lieu idEvenement à l'événement courant\n");
+					action = Saisie.lireInteger("Que voiulez-vous faire ?");
+					switch(action)
+					{
+						case 0:
+							return GERER_EVENEMENTS;
+						default:
+							LieuDao lieuDao = new LieuDao();
+							Lieu l = lieuDao.findById(action);
+							if(l == null)
+							{
+								mauvaiseAction();
+								return GERER_EVENEMENTS;
+							}
+							ServiceMetier.ajouterLieu(ev, l);
+							System.out.println("Lieu ajouté avec succès");
+							return GERER_EVENEMENTS;
+					}
+				} catch (Throwable e) {
+					e.printStackTrace();
+				}
+				return CHOISIR;
+		}
 	}
 	
 	private static void mauvaiseAction()
