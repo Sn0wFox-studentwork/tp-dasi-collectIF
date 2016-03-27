@@ -28,7 +28,8 @@ public class ServiceMetier {
             boolean toCreate = true;
             for(Evenement ev: le)
             {
-                if(ev.getActivite().equals(event.getActivite()))
+                if(ev.getActivite().equals(event.getActivite())
+                		&& ev.getDate().equals(event.getDate()))
                 {
                     toCreate = false;
                     ev.ajouterParticipant(adh);
@@ -58,6 +59,7 @@ public class ServiceMetier {
         return event.getEtat() == Evenement.EventState.TERMINATED;
     }
     
+    @Deprecated
     public static void ajouterParticipant(Evenement event, Adherent adh) {
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
@@ -77,6 +79,7 @@ public class ServiceMetier {
         }
     }
     
+    @Deprecated
     public static List<Evenement> getUnfilledEvents() {
         JpaUtil.creerEntityManager();
         
@@ -92,7 +95,7 @@ public class ServiceMetier {
         return li;
     }
     
-    public static List<Evenement> getEventsToFill() {
+    public static List<Evenement> getEventsToComplete() {
         JpaUtil.creerEntityManager();
         
         List<Evenement> li = new ArrayList<Evenement>();

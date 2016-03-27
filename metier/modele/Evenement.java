@@ -57,10 +57,10 @@ public class Evenement {
     }
     
     // Methodes publiques    
-    public void ajouterParticipant(Adherent adh) {
-        if(etat ==EventState.UNFILLED) {
-            if(activite.isParEquipe()) {
-                int nbPartMax = activite.getNbParticipants();
+    public boolean ajouterParticipant(Adherent adh) {
+    	int nbPartMax = activite.getNbParticipants();
+        if(etat == EventState.UNFILLED) {
+        	if(activite.isParEquipe()) {
                 if(equipes == null) {
                     equipes = new ArrayList<Equipe>();
                     equipes.add(new Equipe());
@@ -88,7 +88,18 @@ public class Evenement {
                 }
                 equipes.get(0).getListeAdherents().add(adh);
             }
+        	int nbPart = 0;
+            for(Equipe eq: equipes)
+            {
+            	nbPart += eq.getListeAdherents().size();
+            }
+            if(nbPartMax == nbPart)
+            {
+            	etat = EventState.FILLED;
+            }
+            return true;
         }
+        return false;
     }
     
     public int getNbParticipant() {
