@@ -28,20 +28,32 @@ public class EvenementDao {
             throw e;
         }
         return event;
-    }
+     }
      
-     public List<Evenement> findAll() throws Throwable {
-        EntityManager em = JpaUtil.obtenirEntityManager();
-        List<Evenement> events = null;
-        try {
-            Query q = em.createQuery("SELECT e FROM Evenement e");
-            events = (List<Evenement>) q.getResultList();
-        }
-        catch(Exception e) {
-            throw e;
-        }
-        return events;
-    }
+     public Evenement findById(int id) throws Throwable {
+         EntityManager em = JpaUtil.obtenirEntityManager();
+         Evenement event = null;
+         try {
+             event = em.find(Evenement.class, id);
+         }
+         catch(Exception e) {
+             throw e;
+         }
+         return event;
+     }
+     
+	 public List<Evenement> findAll() throws Throwable {
+		EntityManager em = JpaUtil.obtenirEntityManager();
+		List<Evenement> events = null;
+		try {
+		    Query q = em.createQuery("SELECT e FROM Evenement e");
+		    events = (List<Evenement>) q.getResultList();
+		}
+		catch(Exception e) {
+		    throw e;
+		}
+		return events;
+	 }
      
      public List<Evenement> findEventsByState(Evenement.EventState state) throws Throwable {
         EntityManager em = JpaUtil.obtenirEntityManager();
