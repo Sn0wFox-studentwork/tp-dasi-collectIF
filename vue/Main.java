@@ -212,6 +212,8 @@ public class Main {
     	//testCascadeAll();
     	//testCreateOrFillEvent();
         //testCascadeAdh();
-        testLieuxDispos();
+        //testLieuxDispos();
+    	
+    	KeyboardView.menu();
     }
 }
