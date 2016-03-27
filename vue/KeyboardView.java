@@ -6,6 +6,17 @@ import fr.insalyon.dasi.util.Saisie;
 
 public class KeyboardView {
 	
+	// MENU ABSOLU GENERAL
+	private static final int QUITTER = 0;
+	private static final int ACCUEIL = 1;
+	private static final int CONNECTER = 2;
+	private static final int DECONNECTER = 3;
+	private static final int CREER_COMPTE = 4;
+	private static final int CHOISIR = 5;
+	private static final int HISTORIQUE = 6;
+	private static final int DEMANDER_EVENEMENT = 7;
+	private static final int GERER_EVENEMENT = 8;
+	
 	private static Adherent adherentConnecte = null;
 	
 	public static void menu()
@@ -13,14 +24,53 @@ public class KeyboardView {
 		// Creation de l'entity manager
 		JpaUtil.creerEntityManager();
 	
-		// Accueil du client et gestion de ces actions
-		accueil();
+		// Accueil du client
+		int action = accueil();
+		
+		// Gestion des actions
+		while(action != QUITTER)
+		{
+			switch(action)
+			{
+				case ACCUEIL:
+					action = accueil();
+					break;
+				case CONNECTER:
+					action = connecter();
+					break;
+				case DECONNECTER:
+					action = deconnecter();
+					break;
+				case CREER_COMPTE:
+					action = creerCompte();
+					break;
+				case CHOISIR:
+					action = choisirQuoiFaire();
+					break;
+				case HISTORIQUE:
+					action = voirHistorique();
+					break;
+				case DEMANDER_EVENEMENT:
+					action = demanderEvenement();
+					break;
+				case GERER_EVENEMENT:
+					action = gererEvenements();
+					break;
+				default:
+					mauvaiseAction();
+					// Retour à l'action en cours
+					break;
+					
+				// NB :	case QUITTER n'existe pas,
+				//		puisqu'on sort de la boucle lorsque action = QUITTER
+			}
+		}
 	}
 	
-	private static void accueil()
+	private static int accueil()
 	{
 		System.out.println("*************Bienvenue sur la page d'accueil de COLLECT'IF !*************");
-		System.out.println("D'ici, vous pouvez :");
+		System.out.println("D'ici, vous pouvez :\n");
 		System.out.println("[0] Quitter");
 		System.out.println("[1] Tenter de vous connecter");
 		System.out.println("[2] Créer un compte\n");		
@@ -29,51 +79,50 @@ public class KeyboardView {
 		switch(action)
 		{
 			case 0:
-				break;
+				return QUITTER;
 			case 1:
-				break;
+				return CONNECTER;
 			case 2:
-				break;
+				return DECONNECTER;
 			default:
 				mauvaiseAction();
-				accueil();
-				break;
+				return ACCUEIL;
 		}
 	}
 	
-	private static void connecter()
+	private static int connecter()
 	{
-		
+		return ACCUEIL;
 	}
 	
-	private static void deconnecter()
+	private static int deconnecter()
 	{
-		
+		return ACCUEIL;
 	}
 	
-	private static void creerCompte()
+	private static int creerCompte()
 	{
-		
+		return ACCUEIL;
 	}
 	
-	private static void choisirQuoiFaire()
+	private static int choisirQuoiFaire()
 	{
-		
+		return ACCUEIL;
 	}
 	
-	private static void voirHistorique()
+	private static int voirHistorique()
 	{
-		
+		return ACCUEIL;
 	}
 	
-	private static void demanderEvenement()
+	private static int demanderEvenement()
 	{
-		
+		return ACCUEIL;
 	}
 	
-	private static void gererEvenements()
+	private static int gererEvenements()
 	{
-		
+		return ACCUEIL;
 	}
 	
 	private static void mauvaiseAction()
