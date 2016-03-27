@@ -1,10 +1,12 @@
 package fr.insalyon.dasi.vue;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import fr.insalyon.dasi.dao.AdherentDao;
 import fr.insalyon.dasi.dao.JpaUtil;
 import fr.insalyon.dasi.metier.modele.Adherent;
+import fr.insalyon.dasi.metier.modele.Evenement;
 import fr.insalyon.dasi.metier.modele.MailInscription;
 import fr.insalyon.dasi.metier.services.ServiceMetier;
 import fr.insalyon.dasi.metier.services.ServiceTechnique;
@@ -229,7 +231,28 @@ public class KeyboardView {
 	
 	private static int voirHistorique()
 	{
-		return ACCUEIL;
+		System.out.println("*************PAGE D'HISTORIQUE*************");
+		List<Evenement> le = ServiceMetier.getHistoriqueDemandes(adherentConnecte);
+		for(Evenement ev: le)
+		{
+			System.out.println(ev);
+		}
+		System.out.println("Ci dessus se trouve l'historique de vos demandes.");
+		System.out.println("Quand vous aurez fini de le consulter, vous pourrez :\n");
+		System.out.println("[0] Revenir à la page de choix");
+		System.out.println("[1] Rafraichir l'Historique\n");
+		int action = Saisie.lireInteger("Que voulez-vous faire ?");
+		
+		switch(action)
+		{
+			case 0:
+				return CHOISIR;
+			case 1:
+				return HISTORIQUE;
+			default:
+				mauvaiseAction();
+				return CHOISIR;
+		}
 	}
 	
 	private static int demanderEvenement()
