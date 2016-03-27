@@ -134,6 +134,8 @@ public class KeyboardView {
 	
 	private static int deconnecter()
 	{
+		adherentConnecte = null;
+		System.out.println("Vous avez été déconnecté.");
 		return ACCUEIL;
 	}
 	
