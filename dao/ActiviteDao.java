@@ -53,4 +53,19 @@ public class ActiviteDao {
         
         return activites;
     }
+    
+    // TODO: a tester
+    public List<Activite> findStartingBy(String beginning) throws Throwable {
+        EntityManager em = JpaUtil.obtenirEntityManager();
+        List<Activite> activites = null;
+        try {
+            Query q = em.createQuery("SELECT a FROM Activite a WHERE a.denomination LIKE :beginning%");
+            activites = (List<Activite>) q.setParameter("beginning", beginning).getResultList();
+        }
+        catch(Exception e) {
+            throw e;
+        }
+        
+        return activites;
+    }
 }

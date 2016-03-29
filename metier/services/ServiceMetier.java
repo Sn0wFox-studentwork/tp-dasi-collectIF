@@ -1,9 +1,11 @@
 package fr.insalyon.dasi.metier.services;
 
+import fr.insalyon.dasi.dao.ActiviteDao;
 import fr.insalyon.dasi.dao.AdherentDao;
 import fr.insalyon.dasi.dao.EvenementDao;
 import fr.insalyon.dasi.dao.JpaUtil;
 import fr.insalyon.dasi.dao.LieuDao;
+import fr.insalyon.dasi.metier.modele.Activite;
 import fr.insalyon.dasi.metier.modele.Adherent;
 import fr.insalyon.dasi.metier.modele.Equipe;
 import fr.insalyon.dasi.metier.modele.Evenement;
@@ -18,6 +20,43 @@ import java.util.logging.Logger;
 
 public class ServiceMetier {
     
+	// Liés à l'OM : ACTIVITE
+	public static List<Activite> getActivitesStartingBy(String beginning) {
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        
+        List<Activite> activites = null;
+        ActiviteDao actDao = new ActiviteDao();
+        try {
+        	activites = actDao.findStartingBy(beginning);
+		} catch (Throwable ex) {
+			Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            JpaUtil.fermerEntityManager();
+        }
+        
+        return activites;
+    }
+	//TODO : A TESTER
+	
+	public static Activite getActiviteById(int id) {
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        
+        Activite activite = null;
+        ActiviteDao actDao = new ActiviteDao();
+        try {
+        	activite = actDao.findById(id);
+		} catch (Throwable ex) {
+			Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            JpaUtil.fermerEntityManager();
+        }
+        
+        return activite;
+    }
+	//TODO : A TESTER
+	
     // Liés à l'OM : EVENEMENT
     public static void createOrFillEvent(Evenement event, Adherent adh) {
         JpaUtil.creerEntityManager();
@@ -110,6 +149,24 @@ public class ServiceMetier {
         return li;
     }
     
+    public static Evenement getEvenementById(int id) {
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        
+        Evenement event = null;
+        EvenementDao eventDao = new EvenementDao();
+        try {
+        	event = eventDao.findById(id);
+		} catch (Throwable ex) {
+			Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            JpaUtil.fermerEntityManager();
+        }
+        
+        return event;
+    }
+	//TODO : A TESTER
+    
     public static void ajouterLieu(Evenement event, Lieu lieu) {
         JpaUtil.creerEntityManager();
         JpaUtil.ouvrirTransaction();
@@ -164,6 +221,24 @@ public class ServiceMetier {
         }
         return ll;
     }
+    
+    public static Lieu getLieuById(int id) {
+        JpaUtil.creerEntityManager();
+        JpaUtil.ouvrirTransaction();
+        
+        Lieu lieu = null;
+        LieuDao lieuDao = new LieuDao();
+        try {
+        	lieu = lieuDao.findById(id);
+		} catch (Throwable ex) {
+			Logger.getLogger(ServiceMetier.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            JpaUtil.fermerEntityManager();
+        }
+        
+        return lieu;
+    }
+	//TODO : A TESTER
     
     // Liés à l'OM : ADHERENT
     public static Adherent authentificate(Adherent adh)
